@@ -1,0 +1,23 @@
+# Virtual environments
+**/venv/
+
+# Node Dependencies
+**/node_modules/
+
+# OS generated files:
+.DS_Store
+**/Thumbs.db
+
+# Python compiled files 
+__pycache__/
+*.py[cod]
+
+# Database (if you end up using PostgreSQL)
+db.sqlite3
+
+# Data Generation artifacts (in case your script outputs)
+simulated_data.json
+simulated_data.csv
+
+# Editor/IDE related
+.vscode/
