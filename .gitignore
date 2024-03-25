@@ -21,3 +21,6 @@ simulated_data.csv
 
 # Editor/IDE related
 .vscode/
+
+# env file
+.env
