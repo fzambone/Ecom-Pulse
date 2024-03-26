@@ -32,6 +32,7 @@ class Visitor(Base):
     id = Column(Integer, primary_key=True, index=True)
     approximate_location = Column(String(50))
     session_start_time = Column(DateTime)
+    ip_address = Column(String)
     deleted_at = Column(DateTime)
 
     events = relationship("Event", back_populates="visitor")

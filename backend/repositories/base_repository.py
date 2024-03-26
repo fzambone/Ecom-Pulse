@@ -1,4 +1,5 @@
 from datetime import datetime
+import random
 from typing import Type, TypeVar
 from sqlalchemy import delete, null, update
 from sqlalchemy.orm import Session, Query
@@ -54,3 +55,9 @@ class BaseRepository:
         delete_stmt = delete(self.model).where(self.model.id == id)
         self.db.execute(delete_stmt)
         self.db.commit()
+
+    def get_random_id(self, entity):
+        ids = self.db.query(entity.id).all()
+        if not ids:
+            return None
+        return random.choice(ids)[0]
