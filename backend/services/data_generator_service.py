@@ -1,12 +1,12 @@
 from datetime import datetime
 import random
 from backend.repositories.models import Category, Event, Order, OrderItem, Product, Visitor
-from repositories.event_repository import EventRepository
-from repositories.order_repository import OrderRepository
-from repositories.order_item_repository import OrderItemRepository
-from repositories.product_repository import ProductRepository
-from repositories.visitor_repository import VisitorRepository
-from repositories.category_repository import CategoryRepository
+from backend.repositories.event_repository import EventRepository
+from backend.repositories.order_repository import OrderRepository
+from backend.repositories.order_item_repository import OrderItemRepository
+from backend.repositories.product_repository import ProductRepository
+from backend.repositories.visitor_repository import VisitorRepository
+from backend.repositories.category_repository import CategoryRepository
 from faker import Faker
 
 class DataGeneratorService:
@@ -26,7 +26,8 @@ class DataGeneratorService:
             for line in f:
                 category_name = line.strip()
                 if category_name not in existing_categories:
-                    self.category_repo.create(category_name)
+                    new_category = Category(name=category_name)
+                    self.category_repo.create(new_category)
     
     def generate_visitor(self):
         visitor_data = {
@@ -43,21 +44,21 @@ class DataGeneratorService:
     def generate_event(self, visitor_id):
         event_types = ["view_homepage", "view_product", "add_to_cart", "purchase"]
         event_type = random.choice(event_types)
+        product_id = None
+
+        if event_type == 'purchase':
+            order, product_id = self.generate_order(visitor_id)
 
         event_data = {
             'timestamp': datetime.now(),
             'visitor_id': visitor_id,
             'event_type': event_type,
             'page_url': self.fake.uri() if event_type != 'purchase' else None,
-            'product_id': None if event_type != "view_product" else self.product_repo.get_random_id(Product),
+            'product_id': product_id,
             'referrer': self.fake.uri() if random.choice([True, False]) else None,
         }
 
         event = Event(**event_data)
-
-        if event_type == 'purchase':
-            self.generate_order(visitor_id)
-
         self.event_repo.create(event)
         return event
     
@@ -97,6 +98,7 @@ class DataGeneratorService:
             
             order_item = OrderItem(**order_item_data)
             self.order_item_repo.create(order_item)
+            associated_product_id = products[0].id if products else None
         
-        return order
+        return order, associated_product_id
     

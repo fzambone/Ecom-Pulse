@@ -8,5 +8,5 @@ class CategoryRepository(BaseRepository):
         super().__init__(db, Category)
 
     def get_all_category_names(self):
-        categories = self.query(Category).all()
+        categories = self.query().all()
         return [category.name for category in categories]
