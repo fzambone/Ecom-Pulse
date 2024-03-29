@@ -4,7 +4,7 @@ from typing import Type, TypeVar
 from sqlalchemy import delete, null, update
 from sqlalchemy.orm import Session, Query
 
-from backend.utils.database import Base
+from utils.database import Base
 
 T = TypeVar('T', bound=Base)
 
@@ -13,8 +13,8 @@ class BaseRepository:
         self.db = db
         self.model = model
 
-    def get_all(self):
-        return self.db.query(self.model).filter(self.model.deleted_at == None).all()
+    def get_all(self, skip: int = 0, limit: int = 100):
+        return self.db.query(self.model).filter(self.model.deleted_at == None).offset(skip).limit(limit)
     
     def get(self, id):
         return self.db.query(self.model).filter(self.model.id == id, self.model.deleted_at == None).first()

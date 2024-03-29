@@ -24,5 +24,5 @@ def session_scope():
     finally:
         session.close()
 
-def init_db():
+def get_db():
     Base.metadata.create_all(bind=engine)
